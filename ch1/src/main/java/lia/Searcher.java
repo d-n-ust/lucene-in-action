@@ -1,4 +1,4 @@
-package com.gmail.dmitryustimov.learning.lia;
+package lia;
 
 /**
  * Copyright Manning Publications Co.

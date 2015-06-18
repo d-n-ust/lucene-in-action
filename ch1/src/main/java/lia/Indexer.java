@@ -1,4 +1,4 @@
-package com.gmail.dmitryustimov.learning.lia;
+package lia;
 
 
 /**
