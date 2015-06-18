@@ -59,22 +59,18 @@ public class Searcher {
                 "contents",  //4
                 new StandardAnalyzer());  //4
 
-        int hitsPerPage = 10000;
-        TopScoreDocCollector collector = TopScoreDocCollector.create(hitsPerPage);
         Query query = parser.parse(q);              //4
 
         long start = System.currentTimeMillis();
-        searcher.search(query, collector);
+        TopDocs hits = searcher.search(query, 10); //5
         long end = System.currentTimeMillis();
 
-        ScoreDoc[] hits = collector.topDocs().scoreDocs;
-
-        System.err.println("Found " + hits.length +   //6
+        System.err.println("Found " + hits.totalHits +   //6
                 " document(s) (in " + (end - start) +        // 6
                 " milliseconds) that matched query '" +     // 6
                 q + "':");                                   // 6
 
-        for (ScoreDoc scoreDoc : hits) {
+        for(ScoreDoc scoreDoc : hits.scoreDocs) {
             Document doc = searcher.doc(scoreDoc.doc);               //7
             System.out.println(doc.get("fullpath"));  //8
         }
