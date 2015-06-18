@@ -18,6 +18,7 @@ package lia;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexReader;
+import org.apache.lucene.index.Term;
 import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.search.*;
@@ -55,11 +56,13 @@ public class Searcher {
         IndexReader reader = DirectoryReader.open(dir);
         IndexSearcher searcher = new IndexSearcher(reader);
 
-        QueryParser parser = new QueryParser(
-                "contents",  //4
-                new StandardAnalyzer());  //4
+//        QueryParser parser = new QueryParser(
+//                "contents",  //4
+//                new StandardAnalyzer());  //4
 
-        Query query = parser.parse(q);              //4
+        Query query = new TermQuery(new Term("contents", "patent"));
+
+//        Query query = parser.parse(q);              //4
 
         long start = System.currentTimeMillis();
         TopDocs hits = searcher.search(query, 10); //5

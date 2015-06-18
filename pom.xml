@@ -10,6 +10,8 @@
 
     <modules>
         <module>ch1</module>
+        <module>ch2</module>
+        <module>common</module>
     </modules>
 
     <properties>
@@ -18,6 +20,11 @@
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>com.gmail.dmitryustimov.learning.lia</groupId>
+                <artifactId>common</artifactId>
+                <version>${project.version}</version>
+            </dependency>
             <dependency>
                 <groupId>junit</groupId>
                 <artifactId>junit</artifactId>
