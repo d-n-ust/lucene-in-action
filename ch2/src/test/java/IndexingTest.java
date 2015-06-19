@@ -17,10 +17,10 @@
 import junit.framework.TestCase;
 import lia.TestUtil;
 import org.apache.lucene.analysis.core.WhitespaceAnalyzer;
-import org.apache.lucene.analysis.standard.StandardAnalyzer;
+import org.apache.lucene.document.StoredField;
+import org.apache.lucene.document.TextField;
 import org.apache.lucene.index.*;
 import org.apache.lucene.store.Directory;
-import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.store.RAMDirectory;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
@@ -29,7 +29,6 @@ import org.apache.lucene.search.Query;
 import org.apache.lucene.search.TermQuery;
 
 import java.io.IOException;
-import java.nio.file.Paths;
 
 // From chapter 2
 public class IndexingTest extends TestCase {
@@ -48,18 +47,10 @@ public class IndexingTest extends TestCase {
 
         for (int i = 0; i < ids.length; i++) {      //3
             Document doc = new Document();
-            doc.add(new Field("id", ids[i],
-                    Field.Store.YES,
-                    Field.Index.NOT_ANALYZED));
-            doc.add(new Field("country", unindexed[i],
-                    Field.Store.YES,
-                    Field.Index.NO));
-            doc.add(new Field("contents", unstored[i],
-                    Field.Store.NO,
-                    Field.Index.ANALYZED));
-            doc.add(new Field("city", text[i],
-                    Field.Store.YES,
-                    Field.Index.ANALYZED));
+            doc.add(new StoredField("id", ids[i]));
+            doc.add(new StoredField("country", unindexed[i]));
+            doc.add(new TextField("contents", unstored[i], Field.Store.NO));
+            doc.add(new TextField("city", text[i], Field.Store.YES));
             writer.addDocument(doc);
         }
         writer.close();
