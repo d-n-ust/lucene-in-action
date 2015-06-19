@@ -1,13 +1,13 @@
 
 /**
  * Copyright Manning Publications Co.
- *
+ * <p/>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p/>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p/>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,16 +17,11 @@
 import junit.framework.TestCase;
 import lia.TestUtil;
 import org.apache.lucene.analysis.core.WhitespaceAnalyzer;
-import org.apache.lucene.document.StoredField;
-import org.apache.lucene.document.TextField;
+import org.apache.lucene.document.*;
 import org.apache.lucene.index.*;
+import org.apache.lucene.search.*;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.RAMDirectory;
-import org.apache.lucene.document.Document;
-import org.apache.lucene.document.Field;
-import org.apache.lucene.search.IndexSearcher;
-import org.apache.lucene.search.Query;
-import org.apache.lucene.search.TermQuery;
 
 import java.io.IOException;
 
@@ -47,8 +42,8 @@ public class IndexingTest extends TestCase {
 
         for (int i = 0; i < ids.length; i++) {      //3
             Document doc = new Document();
-            doc.add(new StoredField("id", ids[i]));
-            doc.add(new StoredField("country", unindexed[i]));
+            doc.add(new StringField("id", ids[i], Field.Store.YES));
+            doc.add(new StringField("country", unindexed[i], Field.Store.YES));
             doc.add(new TextField("contents", unstored[i], Field.Store.NO));
             doc.add(new TextField("city", text[i], Field.Store.YES));
             writer.addDocument(doc);
@@ -95,6 +90,67 @@ public class IndexingTest extends TestCase {
     #6 Get number of hits
     #7 Verify writer document count
     #8 Verify reader document count
+  */
+
+
+    public void testDeleteBeforeIndexMerge() throws IOException {
+        IndexWriter writer = getWriter();
+        assertEquals(2, writer.numDocs()); //A
+        writer.deleteDocuments(new Term("id", "1"));  //B
+        writer.commit();
+        assertTrue(writer.hasDeletions());    //1
+        assertEquals(2, writer.maxDoc());    //2
+        assertEquals(1, writer.numDocs());   //2
+        writer.close();
+    }
+
+    public void testDeleteAfterIndexMerge() throws IOException {
+        IndexWriter writer = getWriter();
+        assertEquals(2, writer.numDocs());
+        writer.deleteDocuments(new Term("id", "1"));
+        writer.forceMergeDeletes();                //3
+        writer.commit();
+        assertFalse(writer.hasDeletions());
+        assertEquals(1, writer.maxDoc());  //C
+        assertEquals(1, writer.numDocs()); //C
+        writer.close();
+    }
+
+  /*
+    #A 2 docs in the index
+    #B Delete first document
+    #C 1 indexed document, 0 deleted documents
+    #1 Index contains deletions
+    #2 1 indexed document, 1 deleted document
+    #3 Optimize compacts deletes
+  */
+
+    public void testUpdate() throws IOException {
+
+        assertEquals(1, getHitCount("city", "Amsterdam"));
+
+        IndexWriter writer = getWriter();
+
+        Document doc = new Document();
+        doc.add(new StringField("id", "1", Field.Store.YES));
+        doc.add(new StringField("country", "Netherlands", Field.Store.YES));
+        doc.add(new TextField("contents", "Den Haag has a lot of museums", Field.Store.NO));
+        doc.add(new TextField("city", "Den Haag", Field.Store.YES));
+        writer.addDocument(doc);
+
+        writer.updateDocument(new Term("id", "1"),       //B
+                doc);                      //B
+        writer.close();
+
+        assertEquals(0, getHitCount("city", "Amsterdam"));//C
+        assertEquals(1, getHitCount("city", "Haag"));     //D
+    }
+
+  /*
+    #A Create new document with "Haag" in city field
+    #B Replace original document with new version
+    #C Verify old document is gone
+    #D Verify new document is indexed
   */
 }
 
