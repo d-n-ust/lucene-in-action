@@ -48,7 +48,7 @@ public class LockTest extends TestCase {
             fail("We should never reach this point");
         }
         catch (LockObtainFailedException e) {
-            // e.printStackTrace();  // #A
+            e.printStackTrace();  // #A
         }
         finally {
             writer1.close();
