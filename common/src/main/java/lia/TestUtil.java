@@ -26,6 +26,7 @@ import org.apache.lucene.store.Directory;
 
 import java.io.IOException;
 import java.io.File;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 
 public class TestUtil {
@@ -66,15 +67,15 @@ public class TestUtil {
         return FSDirectory.open(Paths.get(System.getProperty("index.dir")));
     }
 
-    public static void rmDir(File dir) throws IOException {
-        if (dir.exists()) {
-            File[] files = dir.listFiles();
+    public static void rmDir(Path dir) throws IOException {
+        if (dir.toFile().exists()) {
+            File[] files = dir.toFile().listFiles();
             for (int i = 0; i < files.length; i++) {
                 if (!files[i].delete()) {
                     throw new IOException("could not delete " + files[i]);
                 }
             }
-            dir.delete();
+            dir.toFile().delete();
         }
     }
 }
