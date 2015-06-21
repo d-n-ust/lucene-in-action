@@ -10,7 +10,6 @@
     </parent>
     <artifactId>ch2</artifactId>
     <version>1.0-SNAPSHOT</version>
-    <name>ch2</name>
 
     <dependencies>
         <dependency>
