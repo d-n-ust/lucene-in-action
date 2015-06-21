@@ -14,8 +14,11 @@
  */
 
 import lia.CreateTestIndex;
+import org.apache.lucene.analysis.core.SimpleAnalyzer;
+import org.apache.lucene.document.Document;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexReader;
+import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.search.TopDocs;
@@ -75,5 +78,51 @@ public class BasicSearchingTest {
     #B Create IndexSearcher
     #C Confirm one hit for "ant"
     #D Confirm two hits for "junit"
+  */
+
+    @Test
+    public void testKeyword() throws Exception {
+        Directory dir = FSDirectory.open(Paths.get("books_index"));
+        IndexReader reader = DirectoryReader.open(dir);
+        IndexSearcher searcher = new IndexSearcher(reader);
+
+        Term t = new Term("isbn", "9781935182023");
+        Query query = new TermQuery(t);
+        TopDocs docs = searcher.search(query, 10);
+        assertEquals("JUnit in Action, Second Edition",
+                1, docs.totalHits);
+
+        reader.close();
+        dir.close();
+    }
+
+    @Test
+    public void testQueryParser() throws Exception {
+        Directory dir = FSDirectory.open(Paths.get("books_index"));
+        IndexReader reader = DirectoryReader.open(dir);
+        IndexSearcher searcher = new IndexSearcher(reader);
+
+        QueryParser parser = new QueryParser(
+                "contents",                  //A
+                new SimpleAnalyzer());       //A
+
+        Query query = parser.parse("+JUNIT +ANT -MOCK");                  //B
+        TopDocs docs = searcher.search(query, 10);
+        assertEquals(1, docs.totalHits);
+        Document d = searcher.doc(docs.scoreDocs[0].doc);
+        assertEquals("Ant in Action", d.get("title"));
+
+        query = parser.parse("mock OR junit");                            //B
+        docs = searcher.search(query, 10);
+        assertEquals("Ant in Action, " +
+                        "JUnit in Action, Second Edition",
+                2, docs.totalHits);
+
+        reader.close();
+        dir.close();
+    }
+  /*
+    #A Create QueryParser
+    #B Parse user's text
   */
 }

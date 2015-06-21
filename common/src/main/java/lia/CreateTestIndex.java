@@ -23,10 +23,7 @@ import org.apache.lucene.analysis.standard.StandardFilter;
 import org.apache.lucene.analysis.standard.StandardTokenizer;
 import org.apache.lucene.analysis.standard.std40.StandardTokenizer40;
 import org.apache.lucene.analysis.util.StopwordAnalyzerBase;
-import org.apache.lucene.document.Document;
-import org.apache.lucene.document.Field;
-import org.apache.lucene.document.DateTools;
-import org.apache.lucene.document.IntField;
+import org.apache.lucene.document.*;
 import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
@@ -70,14 +67,12 @@ public class CreateTestIndex {
 
         System.out.println(title + "\n" + author + "\n" + subject + "\n" + pubmonth + "\n" + category + "\n---------");
 
-        doc.add(new Field("isbn",                     // 3
+        doc.add(new StringField("isbn",                     // 3
                 isbn,                       // 3
-                Field.Store.YES,            // 3
-                Field.Index.NOT_ANALYZED)); // 3
-        doc.add(new Field("category",                 // 3
+                Field.Store.YES)); // 3
+        doc.add(new StringField("category",                 // 3
                 category,                   // 3
-                Field.Store.YES,            // 3
-                Field.Index.NOT_ANALYZED)); // 3
+                Field.Store.YES)); // 3
         doc.add(new Field("title",                    // 3
                 title,                      // 3
                 Field.Store.YES,            // 3
