@@ -9,9 +9,10 @@
     <name>lucene-in-action</name>
 
     <modules>
+        <module>common</module>
         <module>ch1</module>
         <module>ch2</module>
-        <module>common</module>
+        <module>ch3</module>
     </modules>
 
     <properties>
