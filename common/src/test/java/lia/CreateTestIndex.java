@@ -108,9 +108,15 @@ public class CreateTestIndex {
                 Field.TermVector.WITH_POSITIONS_OFFSETS)); // 3  //4
 
         doc.add(new StringField("pubmonth",          // 3
-                //FORMATTER.parse(pubmonth).getTime(),
-                //Integer.valueOf(pubmonth),
                 pubmonth,
+                Field.Store.YES));   // 3
+
+        doc.add(new IntField("pubmonth_num",          // 3
+                Integer.valueOf(pubmonth),
+                Field.Store.YES));   // 3
+
+        doc.add(new LongField("pubmonth_ts",          // 3
+                FORMATTER.parse(pubmonth).getTime(),
                 Field.Store.YES));   // 3
 
         Date d; // 3
