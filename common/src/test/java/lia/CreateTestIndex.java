@@ -36,6 +36,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.text.SimpleDateFormat;
 import java.util.Properties;
 import java.util.Date;
 import java.util.List;
@@ -47,7 +48,9 @@ public class CreateTestIndex {
     /** Default maximum allowed token length */
     public static final int DEFAULT_MAX_TOKEN_LENGTH = 255;
 
-    public static Document getDocument(String rootDir, File file) throws IOException {
+    public static SimpleDateFormat FORMATTER = new SimpleDateFormat("yyyyMM");
+
+    public static Document getDocument(String rootDir, File file) throws IOException, ParseException {
         Properties props = new Properties();
         props.load(new FileInputStream(file));
 
@@ -104,8 +107,10 @@ public class CreateTestIndex {
                 Field.Index.ANALYZED,          // 3  //4
                 Field.TermVector.WITH_POSITIONS_OFFSETS)); // 3  //4
 
-        doc.add(new IntField("pubmonth",          // 3
-                Integer.parseInt(pubmonth),
+        doc.add(new StringField("pubmonth",          // 3
+                //FORMATTER.parse(pubmonth).getTime(),
+                //Integer.valueOf(pubmonth),
+                pubmonth,
                 Field.Store.YES));   // 3
 
         Date d; // 3
@@ -203,7 +208,12 @@ public class CreateTestIndex {
         IndexWriter w = new IndexWriter(dir, config);           //3
 
         for (File file : results) {
-            Document doc = getDocument(dataDir, file);
+            Document doc = null;
+            try {
+                doc = getDocument(dataDir, file);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
             w.addDocument(doc);
         }
         w.close();
