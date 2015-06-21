@@ -13,7 +13,7 @@
  * See the License for the specific lan
  */
 
-import lia.CreateTestIndex;
+import lia.BooksIndexBase;
 import org.apache.lucene.analysis.core.SimpleAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.DirectoryReader;
@@ -26,34 +26,17 @@ import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.store.FSDirectory;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
-
-import java.io.IOException;
 import java.nio.file.Paths;
 
-import static org.junit.Assert.assertEquals;
 
 // From chapter 3
-public class BasicSearchingTest {
-
-    public static final String INDEX_PATH_BOOKS = "books_index";
-
-    @Before
-    public void setUp() throws IOException {
-        CreateTestIndex.indexDir("../data", INDEX_PATH_BOOKS);
-    }
-
-    @After
-    public void tearDown() throws IOException {
-        CreateTestIndex.deleteIndex(INDEX_PATH_BOOKS);
-    }
+public class BasicSearchingTest extends BooksIndexBase {
 
     @Test
     public void testTerm() throws Exception {
 
-        Directory dir = FSDirectory.open(Paths.get("books_index"));
+        Directory dir = FSDirectory.open(Paths.get(INDEX_PATH_BOOKS));
         IndexReader reader = DirectoryReader.open(dir);
         IndexSearcher searcher = new IndexSearcher(reader);  //B
 
@@ -81,24 +64,8 @@ public class BasicSearchingTest {
   */
 
     @Test
-    public void testKeyword() throws Exception {
-        Directory dir = FSDirectory.open(Paths.get("books_index"));
-        IndexReader reader = DirectoryReader.open(dir);
-        IndexSearcher searcher = new IndexSearcher(reader);
-
-        Term t = new Term("isbn", "9781935182023");
-        Query query = new TermQuery(t);
-        TopDocs docs = searcher.search(query, 10);
-        assertEquals("JUnit in Action, Second Edition",
-                1, docs.totalHits);
-
-        reader.close();
-        dir.close();
-    }
-
-    @Test
     public void testQueryParser() throws Exception {
-        Directory dir = FSDirectory.open(Paths.get("books_index"));
+        Directory dir = FSDirectory.open(Paths.get(INDEX_PATH_BOOKS));
         IndexReader reader = DirectoryReader.open(dir);
         IndexSearcher searcher = new IndexSearcher(reader);
 

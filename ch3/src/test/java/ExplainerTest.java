@@ -13,11 +13,12 @@
  * See the License for the specific lan
  */
 
-import lia.CreateTestIndex;
+import lia.BooksIndexBase;
 import org.apache.lucene.analysis.core.SimpleAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexReader;
+import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.search.Explanation;
 import org.apache.lucene.search.TopDocs;
@@ -26,19 +27,19 @@ import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.store.Directory;
+import org.junit.Test;
 
+import java.io.IOException;
 import java.nio.file.Paths;
 
 // From chapter 3
-public class Explainer {
+public class ExplainerTest extends BooksIndexBase {
 
     public static final String INDEX_PATH_BOOKS = "books_index";
     public static final String QUERY = "junit";
 
-    public static void main(String[] args) throws Exception {
-
-        CreateTestIndex.indexDir("data", INDEX_PATH_BOOKS);
-
+    @Test
+    public void testExplaination() throws IOException, ParseException {
         Directory directory = FSDirectory.open(Paths.get(INDEX_PATH_BOOKS));
         QueryParser parser = new QueryParser(
                 "contents", new SimpleAnalyzer());
@@ -61,8 +62,6 @@ public class Explainer {
         }
         reader.close();
         directory.close();
-
-        CreateTestIndex.deleteIndex(INDEX_PATH_BOOKS);
     }
 }
 /*
