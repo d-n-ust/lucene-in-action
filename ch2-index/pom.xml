@@ -8,7 +8,7 @@
         <artifactId>lucene-in-action</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
-    <artifactId>ch2</artifactId>
+    <artifactId>ch2-index</artifactId>
     <version>1.0-SNAPSHOT</version>
 
     <dependencies>

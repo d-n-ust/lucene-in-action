@@ -8,9 +8,8 @@
         <artifactId>lucene-in-action</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
-    <artifactId>ch1</artifactId>
+    <artifactId>ch1-intro</artifactId>
     <version>1.0-SNAPSHOT</version>
-    <name>ch1</name>
 
     <dependencies>
         <dependency>

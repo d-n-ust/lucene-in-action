@@ -10,9 +10,9 @@
 
     <modules>
         <module>common</module>
-        <module>ch1</module>
-        <module>ch2</module>
-        <module>ch3</module>
+        <module>ch1-intro</module>
+        <module>ch2-index</module>
+        <module>ch3-search</module>
     </modules>
 
     <properties>
