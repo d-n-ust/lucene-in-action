@@ -73,14 +73,17 @@ public class CreateTestIndex {
         doc.add(new StringField("isbn",                     // 3
                 isbn,                       // 3
                 Field.Store.YES)); // 3
+
         doc.add(new StringField("category",                 // 3
                 category,                   // 3
                 Field.Store.YES)); // 3
+
         doc.add(new Field("title",                    // 3
                 title,                      // 3
                 Field.Store.YES,            // 3
                 Field.Index.ANALYZED,       // 3
                 Field.TermVector.WITH_POSITIONS_OFFSETS));   // 3
+
         doc.add(new Field("title2",                   // 3
                 title.toLowerCase(),        // 3
                 Field.Store.YES,            // 3
