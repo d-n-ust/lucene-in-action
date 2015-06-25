@@ -15,6 +15,10 @@ package lia;
  * See the License for the specific lan
  */
 
+import org.apache.lucene.analysis.core.WhitespaceAnalyzer;
+import org.apache.lucene.document.Field;
+import org.apache.lucene.index.IndexWriter;
+import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TopDocs;
@@ -77,5 +81,18 @@ public class TestUtil {
             }
             dir.toFile().delete();
         }
+    }
+
+    public static void indexSingleFieldDocs(Directory dir, Field[] fields) throws Exception {
+
+        IndexWriterConfig config  = new IndexWriterConfig(new WhitespaceAnalyzer());
+        IndexWriter writer = new IndexWriter(dir, config);
+
+        for (int i = 0; i < fields.length; i++) {
+            Document doc = new Document();
+            doc.add(fields[i]);
+            writer.addDocument(doc);
+        }
+        writer.close();
     }
 }
