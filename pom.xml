@@ -13,6 +13,7 @@
         <module>ch1-intro</module>
         <module>ch2-index</module>
         <module>ch3-search</module>
+        <module>ch4-analysis</module>
     </modules>
 
     <properties>
