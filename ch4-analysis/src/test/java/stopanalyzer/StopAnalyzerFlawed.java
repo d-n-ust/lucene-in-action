@@ -43,8 +43,8 @@ public class StopAnalyzerFlawed extends Analyzer {
     @Override
     protected TokenStreamComponents createComponents(final String fieldName) {
         final Tokenizer source = new LetterTokenizer();
-        TokenStream result = new StopFilter(source, stopWords);
-        result = new LowerCaseFilter(result);
-        return new TokenStreamComponents(source, result);
+        return new TokenStreamComponents(source,
+                new LowerCaseFilter(
+                        new StopFilter(source, stopWords)));
     }
 }
