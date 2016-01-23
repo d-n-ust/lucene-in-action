@@ -38,13 +38,9 @@ public class Searcher {
 
     public static void main(String[] args) throws IllegalArgumentException,
             IOException, ParseException {
-        if (args.length != 2) {
-            throw new IllegalArgumentException("Usage: java " + Searcher.class.getName()
-                    + " <index dir> <query>");
-        }
 
-        String indexDir = args[0];               //1
-        String q = args[1];                      //2
+        String indexDir = "index_ch1";               //1
+        String q = "patent";                         //2
 
         search(indexDir, q);
     }
@@ -56,21 +52,15 @@ public class Searcher {
         IndexReader reader = DirectoryReader.open(dir);
         IndexSearcher searcher = new IndexSearcher(reader);
 
-//        QueryParser parser = new QueryParser(
-//                "contents",  //4
-//                new StandardAnalyzer());  //4
-
-        Query query = new TermQuery(new Term("contents", "patent"));
-
-//        Query query = parser.parse(q);              //4
+        Query query = new TermQuery(new Term("contents", q));
 
         long start = System.currentTimeMillis();
         TopDocs hits = searcher.search(query, 10); //5
         long end = System.currentTimeMillis();
 
-        System.err.println("Found " + hits.totalHits +   //6
+        System.err.println("Found " + hits.totalHits +       //6
                 " document(s) (in " + (end - start) +        // 6
-                " milliseconds) that matched query '" +     // 6
+                " milliseconds) that matched query '" +      // 6
                 q + "':");                                   // 6
 
         for(ScoreDoc scoreDoc : hits.scoreDocs) {

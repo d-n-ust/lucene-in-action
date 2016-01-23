@@ -14,6 +14,7 @@
         <module>ch2-index</module>
         <module>ch3-search</module>
         <module>ch4-analysis</module>
+        <module>ch5-adv-search</module>
     </modules>
 
     <properties>
